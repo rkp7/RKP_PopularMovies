@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-23.4.0_67ac62f5bfc254787f16511ad04bf00150529294\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_8cd2f6faf0e19742fa61eafaec403cf39041641d\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-23.4.0_5599937cfeeb96c433b37b94fe63bac31b86206c\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-23.4.0_3ae6e30fea1a83fed77119192ed2273b8d13bdf9\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-23.4.0_0d0a20188d5fa292bab44c0fa3c0a07499e5ef39\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="59d93a9d17adc79f0c3c0bd0631e81d38db97f91">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_5fcd7c37d7c367f84447a49ea5b85710eaf6feaf\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-23.4.0_46e0071a7a28f2178ad7f927e31a890994e4fb0f\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="be08ee090d24e18db8cde2bf396ad08de1ab1947">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_156f42a5034340c9aa9db4019d47d2d92675726a\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-23.4.0_ed85a7962db783dec39fd2131bfae407ac15ddee\classes.dex" />
+    </item>
+
+</items>
