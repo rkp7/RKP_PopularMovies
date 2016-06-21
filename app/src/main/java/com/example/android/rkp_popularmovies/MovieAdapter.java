@@ -40,6 +40,8 @@ public class MovieAdapter extends ArrayAdapter<MovieItem> {
      * @return The View for the position in the AdapterView.
      */
     public View getView(int position, View convertView, ViewGroup parent) {
+        final String BASE_URL_FOR_POSTERS = "http://image.tmdb.org/t/p/w185/";
+
         // Gets the MovieItem object from the ArrayAdapter at the appropriate position
         MovieItem movie = getItem(position);
         // Gets the current context for later usage
@@ -56,8 +58,10 @@ public class MovieAdapter extends ArrayAdapter<MovieItem> {
 
         // Obtain the ImageView of poster thumnail for future reference
         ImageView thumbnailView = (ImageView) convertView.findViewById(R.id.movie_image_thumbnail);
+
+
         // Load the poster thumbnail using Picasso in the above referenced ImageView
-        Picasso.with(currentContext).load(movie.imageThumbnail).into(thumbnailView);
+        Picasso.with(currentContext).load(BASE_URL_FOR_POSTERS + movie.imageThumbnail).into(thumbnailView);
 
         return convertView;
     }

@@ -1,34 +1,39 @@
 package com.example.android.rkp_popularmovies;
 
 
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment{
 
     private MovieAdapter movieAdapter;
-
-    // Sample data identical to data which shall be retrieved from theMovieDB API
-    MovieItem[] movieItem = {
-            new MovieItem("X-Men: Apocalypse", "http://image.tmdb.org/t/p/w185//zSouWWrySXshPCT4t3UKCQGayyo.jpg",
-                    "asdaS",8.5, "2016-12-12"),
-            new MovieItem("Jurassic World", "http://image.tmdb.org/t/p/w185//jjBgi2r5cRt36xF6iNUEhzscEcb.jpg",
-                    "asdaS",8.1, "2016-12-12"),
-            new MovieItem("Warcraft", "http://image.tmdb.org/t/p/w185//ckrTPz6FZ35L5ybjqvkLWzzSLO7.jpg",
-                    "asdaS",8.1, "2016-12-12"),
-            new MovieItem("Finding Dory", "http://image.tmdb.org/t/p/w185//fCxP3bjrDuHLzagbgO3f27Nr2Kq.jpg",
-                    "asdaS",8.1, "2016-12-12")
-    };
 
     public MainFragment() {
         // Required empty public constructor
@@ -41,8 +46,8 @@ public class MainFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // Get the custom MovieAdapter reference for the list of MovieItem objects
-        movieAdapter = new MovieAdapter(getActivity(), Arrays.asList(movieItem));
+        // Initialize the custom MovieAdapter reference for the list of MovieItem objects
+        movieAdapter = new MovieAdapter(getActivity(), new ArrayList<MovieItem>());
 
         // Get a reference to the GridView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
@@ -52,4 +57,146 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FetchMovieTask movieTask = new FetchMovieTask();
+        movieTask.execute("popular");
+    }
+
+    public class FetchMovieTask extends AsyncTask<String, Void, MovieItem[]> {
+
+        private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
+
+        @Override
+        protected MovieItem[] doInBackground(String... strings) {
+            // We pass only one parameter. Condition checking is required.
+
+            if(strings.length != 1) {
+                return null;
+            }
+
+            // These two need to be declared outside the try/catch
+            // so that they can be closed in the finally block.
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+
+            // Will contain the raw JSON response as a string.
+            String movieJSONStr = null;
+
+            final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+            final String SORT_CATEGORY = strings[0];
+
+            try {
+
+                // Construct the URL for TheMovieDB query
+                Uri uri = Uri.parse(BASE_URL + SORT_CATEGORY).buildUpon()
+                        .appendQueryParameter("api_key", BuildConfig.THE_MOVIE_DB_API_KEY).build();
+
+                URL url = new URL(uri.toString());
+                Log.v("URL: ", uri.toString());
+
+                // Create the request to TheMovieDB, and open the connection
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+
+                // Read the input stream into a String
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    return null;
+                }
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                    // But it does make debugging a *lot* easier if you print out the completed
+                    // buffer for debugging.
+                    buffer.append(line + "\n");
+                }
+
+                if (buffer.length() == 0) {
+                    // Stream was empty.  No point in parsing.
+                    return null;
+                }
+
+                movieJSONStr = buffer.toString();
+                Log.v("JSON: ", movieJSONStr);
+                return getMovieDataFromJSON(movieJSONStr);
+
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error ", e);
+                // If the code didn't successfully get the movie data, there's no point in attemping
+                // to parse it.
+                return null;
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "JSON Error ", e);
+            } catch (ParseException e) {
+                Log.e(LOG_TAG, "Error ", e);
+            } finally{
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        Log.e(LOG_TAG, "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(MovieItem[] movieItems) {
+            if(movieItems != null) {
+                movieAdapter.clear();
+                for(MovieItem m: movieItems) {
+                    movieAdapter.add(m);
+                }
+            }
+        }
+
+        private MovieItem[] getMovieDataFromJSON(String movieJSONStr) throws JSONException, ParseException {
+            // These are the names of the JSON objects that need to be extracted.
+            final String TMDB_RESULTS = "results";
+            final String TMDB_POSTER_PATH = "poster_path";
+            final String TMDB_TITLE = "original_title";
+            final String TMDB_ID = "id";
+            final String TMDB_RELEASE_DATE = "release_date";
+            final String TMDB_USER_RATING = "vote_average";
+            final String TMDB_PLOT = "overview";
+
+            JSONObject movieJSON = new JSONObject(movieJSONStr);
+            JSONArray movieArray = movieJSON.getJSONArray(TMDB_RESULTS);
+
+            int noOfMovies = movieArray.length();
+            MovieItem movieItems[] = new MovieItem[noOfMovies];
+
+            for(int i=0; i < noOfMovies; i++) {
+
+                JSONObject movieObject = movieArray.getJSONObject(i);
+                movieItems[i] = new MovieItem(movieObject.getInt(TMDB_ID),
+                        movieObject.getString(TMDB_TITLE),
+                        movieObject.getString(TMDB_POSTER_PATH),
+                        movieObject.getString(TMDB_PLOT),
+                        movieObject.getDouble(TMDB_USER_RATING),
+                        convertStringToDate(movieObject.getString(TMDB_RELEASE_DATE)));
+
+            }
+
+            return  movieItems;
+        }
+
+        private Date convertStringToDate(String dateString) throws ParseException {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            Date d = simpleDateFormat.parse(dateString);
+            return d;
+        }
+    }
 }
