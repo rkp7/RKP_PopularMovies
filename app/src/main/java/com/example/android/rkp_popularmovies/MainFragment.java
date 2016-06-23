@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.style.TtsSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,22 +33,42 @@ import java.util.Date;
  * A simple {@link Fragment} subclass.
  */
 public class MainFragment extends Fragment{
-
+    // class variable for custom ArrayAdapter
     private MovieAdapter movieAdapter;
+    // class variable for ArrayList which is the basis of custom ArrayAdapter
+    private ArrayList<MovieItem> movieItemsArrayList;
 
     public MainFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            movieItemsArrayList = new ArrayList<MovieItem>();
+            FetchMovieTask movieTask = new FetchMovieTask();
+            movieTask.execute("popular");
+        }
+        else {
+            movieItemsArrayList = savedInstanceState.getParcelableArrayList("movies");
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movies", movieItemsArrayList);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        // Get the reference to the root view
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Initialize the custom MovieAdapter reference for the list of MovieItem objects
-        movieAdapter = new MovieAdapter(getActivity(), new ArrayList<MovieItem>());
+        movieAdapter = new MovieAdapter(getActivity(), movieItemsArrayList);
 
         // Get a reference to the GridView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
@@ -57,12 +78,6 @@ public class MainFragment extends Fragment{
         return rootView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        FetchMovieTask movieTask = new FetchMovieTask();
-        movieTask.execute("popular");
-    }
 
     public class FetchMovieTask extends AsyncTask<String, Void, MovieItem[]> {
 
@@ -155,13 +170,25 @@ public class MainFragment extends Fragment{
         protected void onPostExecute(MovieItem[] movieItems) {
             if(movieItems != null) {
                 movieAdapter.clear();
+                //movieItemsArrayList.clear();
                 for(MovieItem m: movieItems) {
                     movieAdapter.add(m);
+                    //movieItemsArrayList.add(m);
                 }
             }
         }
 
-        private MovieItem[] getMovieDataFromJSON(String movieJSONStr) throws JSONException, ParseException {
+        /**
+         * Parse JSON format and retrieve information regarding movies
+         *
+         * @param movieJSONStr
+         * @return Array of objects of custom MovieItem class holding the movie details
+         *          retrieved from TheMovieDB API
+         * @throws JSONException
+         * @throws ParseException
+         */
+        private MovieItem[] getMovieDataFromJSON(String movieJSONStr)
+                throws JSONException, ParseException {
             // These are the names of the JSON objects that need to be extracted.
             final String TMDB_RESULTS = "results";
             final String TMDB_POSTER_PATH = "poster_path";
@@ -171,12 +198,14 @@ public class MainFragment extends Fragment{
             final String TMDB_USER_RATING = "vote_average";
             final String TMDB_PLOT = "overview";
 
+            // Parse the JSON format to obtain required data
             JSONObject movieJSON = new JSONObject(movieJSONStr);
             JSONArray movieArray = movieJSON.getJSONArray(TMDB_RESULTS);
 
             int noOfMovies = movieArray.length();
             MovieItem movieItems[] = new MovieItem[noOfMovies];
 
+            // Obtain required movie details and store in custom MovieItem objects
             for(int i=0; i < noOfMovies; i++) {
 
                 JSONObject movieObject = movieArray.getJSONObject(i);
@@ -192,6 +221,13 @@ public class MainFragment extends Fragment{
             return  movieItems;
         }
 
+        /**
+         * Method for conversion of String to Date object type
+         *
+         * @param dateString
+         * @return an object of Date type holding the equivalent date from String format
+         * @throws ParseException
+         */
         private Date convertStringToDate(String dateString) throws ParseException {
             String pattern = "yyyy-MM-dd";
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
