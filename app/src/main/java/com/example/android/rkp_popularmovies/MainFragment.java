@@ -3,6 +3,7 @@ package com.example.android.rkp_popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.json.JSONArray;
@@ -43,7 +45,7 @@ public class MainFragment extends Fragment{
     private MovieAdapter movieAdapter;
     // class variable for ArrayList which is the basis of custom ArrayAdapter
     private ArrayList<MovieItem> movieItemsArrayList;
-
+    // Preference code for intent v
     private static final int CODE_PREFERENCES = 1;
 
     public MainFragment() {
@@ -55,11 +57,14 @@ public class MainFragment extends Fragment{
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        // Check if there is a previous instance saved
         if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
+            // Initialize new array list for movies and retrieve data from API
             movieItemsArrayList = new ArrayList<MovieItem>();
             updateMovieList();
         }
         else {
+            // Obtain movie list from saved instance state
             movieItemsArrayList = savedInstanceState.getParcelableArrayList("movies");
         }
     }
@@ -79,6 +84,7 @@ public class MainFragment extends Fragment{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            // Start settings activity and await result
             startActivityForResult(new Intent(getActivity(), SettingsActivity.class),
                     CODE_PREFERENCES);
             return true;
@@ -87,15 +93,24 @@ public class MainFragment extends Fragment{
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Function for executing some action after an activity finishes and returns to its parent
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        // verify whether intent request was for Settings activity
         if(requestCode == CODE_PREFERENCES) {
             updateMovieList();
         }
     }
 
+    /**
+     *  Obtain data from the Movie DB API based on preference set in Settings
+     */
     void updateMovieList() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sortCategory = sharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_popular_sort));
@@ -104,6 +119,10 @@ public class MainFragment extends Fragment{
         movieTask.execute(sortCategory);
     }
 
+    /**
+     * Saving the parcelable objects while saving instance state for future reference
+     * @param outState
+     */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("movies", movieItemsArrayList);
@@ -122,6 +141,18 @@ public class MainFragment extends Fragment{
         // Get a reference to the GridView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         gridView.setAdapter(movieAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                MovieItem movieItem = movieAdapter.getItem(i);
+                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                intent.putExtra("Movie", movieItem);
+                startActivity(intent);
+            }
+        });
 
         // Inflate the layout for this fragment
         return rootView;
@@ -264,8 +295,9 @@ public class MainFragment extends Fragment{
                         movieObject.getString(TMDB_PLOT),
                         movieObject.getDouble(TMDB_USER_RATING),
                         convertStringToDate(movieObject.getString(TMDB_RELEASE_DATE)));
-
             }
+
+
 
             return  movieItems;
         }

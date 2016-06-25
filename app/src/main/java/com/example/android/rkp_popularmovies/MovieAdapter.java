@@ -40,6 +40,7 @@ public class MovieAdapter extends ArrayAdapter<MovieItem> {
      * @return The View for the position in the AdapterView.
      */
     public View getView(int position, View convertView, ViewGroup parent) {
+        // Base URL for retrieving the poster image
         final String BASE_URL_FOR_POSTERS = "http://image.tmdb.org/t/p/w185/";
 
         // Gets the MovieItem object from the ArrayAdapter at the appropriate position

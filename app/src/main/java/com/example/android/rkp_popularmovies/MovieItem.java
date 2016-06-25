@@ -72,6 +72,9 @@ public class MovieItem implements Parcelable{
         parcel.writeString(imageThumbnail);
         parcel.writeString(plotSynopsis);
         parcel.writeDouble(userRating);
-        parcel.writeString(releaseDate.toString());
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        parcel.writeString(simpleDateFormat.format(releaseDate));
     }
 }

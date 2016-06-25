@@ -1,3 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="21.1.2"
+        sha1="042340d95fe641c7cff20ef4d78dca80ef25a83b">
+        <dex dex="C:\Users\Raj\AndroidStudioProjects\RKP_PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_5fcd7c37d7c367f84447a49ea5b85710eaf6feaf\classes.dex" />
+    </item>
+
+</items>
