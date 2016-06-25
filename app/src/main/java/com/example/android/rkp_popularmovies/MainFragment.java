@@ -1,13 +1,19 @@
 package com.example.android.rkp_popularmovies;
 
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.style.TtsSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -38,6 +44,8 @@ public class MainFragment extends Fragment{
     // class variable for ArrayList which is the basis of custom ArrayAdapter
     private ArrayList<MovieItem> movieItemsArrayList;
 
+    private static final int CODE_PREFERENCES = 1;
+
     public MainFragment() {
         // Required empty public constructor
     }
@@ -45,14 +53,55 @@ public class MainFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
         if(savedInstanceState == null || !savedInstanceState.containsKey("movies")) {
             movieItemsArrayList = new ArrayList<MovieItem>();
-            FetchMovieTask movieTask = new FetchMovieTask();
-            movieTask.execute("popular");
+            updateMovieList();
         }
         else {
             movieItemsArrayList = savedInstanceState.getParcelableArrayList("movies");
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds refresh option to menu.
+        inflater.inflate(R.menu.main_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            startActivityForResult(new Intent(getActivity(), SettingsActivity.class),
+                    CODE_PREFERENCES);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == CODE_PREFERENCES) {
+            updateMovieList();
+        }
+    }
+
+    void updateMovieList() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortCategory = sharedPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_popular_sort));
+
+        FetchMovieTask movieTask = new FetchMovieTask();
+        movieTask.execute(sortCategory);
     }
 
     @Override

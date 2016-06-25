@@ -1,6 +1,26 @@
 <resources>
     <string name="app_name">RKP_PopularMovies</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pref_sort_label">Sort by</string>
+    <string name="pref_sort_key">Categories</string>
+
+    <string name="pref_popular_sort">Most Popular</string>
+    <string name="pref_top_rated_sort">Highest rated</string>
+
+    <string-array name="pref_sort_by_categories">
+        <item>@string/pref_popular_sort</item>
+        <item>@string/pref_top_rated_sort</item>
+    </string-array>
+
+    <string name="pref_popular_sort_value">popular</string>
+    <string name="pref_top_rated_sort_value">top_rated</string>
+
+    <string-array name="pref_sort_values">
+        <item>@string/pref_popular_sort_value</item>
+        <item>@string/pref_top_rated_sort_value</item>
+    </string-array>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_settings">SettingsActivity</string>
 </resources>
